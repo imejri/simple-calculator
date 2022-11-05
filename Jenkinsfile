@@ -22,6 +22,6 @@ pipeline {
 }
 void sendNotification(String action, String email) {
     mail to: "${email}",
+    subject: "Pipeline ${action}: ${currentBuild.fullDisplayName}",
+    body: "The following pipeline ${action}: ${env.BUILD_URL}"
 }
-subject: "Pipeline ${action}: ${currentBuild.fullDisplayName}",
-body: "The following pipeline ${action}: ${env.BUILD_URL}"
