@@ -18,12 +18,13 @@ pipeline {
                sh './mvnw clean test'
             }
         } 
-    }
         stage('Check Style') {
             steps {
                 sh './mvnw clean checkstyle:check'
-             }
+            }
         }
+    }
+        
 
     post {
         failure {
@@ -40,8 +41,7 @@ void sendNotification(String action, String email) {
     body: "The following pipeline ${action}: ${env.BUILD_URL}"
 }
 void sendFailureAlert(String email) {
-    mail to: "${email}",
-
+mail to: "${email}",
 subject: "Pipeline failed: ${currentBuild.fullDisplayName}",
 body: "The following pipeline failed: ${env.BUILD_URL}"
 }
