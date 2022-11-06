@@ -11,7 +11,9 @@ pipeline {
                 sendNotification('started', 'team@example.com')
                 git branch: 'notifications',
                 url: 'https://github.com/imejri/simple-calculator.git'
-                echo "the name of the stage is ${STAGE_NAME}"
+                retry(3) {
+                    echo "the name of the stage is ${STAGE_NAME}"
+                }               
             } 
         }
 
