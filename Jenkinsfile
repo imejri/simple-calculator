@@ -1,6 +1,7 @@
 pipeline {
     agent { node { label 'maven' } }
     options { 
+        // dont execute the declarative default checkout
         skipDefaultCheckout true 
     }
 
@@ -11,6 +12,7 @@ pipeline {
                 git branch: 'notifications',
                 url: 'https://github.com/imejri/simple-calculator.git'
             } 
+            echo "the name of the stage is ${STAGE_NAME}"
         }
 
         stage('Test') {
@@ -18,9 +20,18 @@ pipeline {
                sh './mvnw clean test'
             }
         } 
+
         stage('Check Style') {
             steps {
-                sh './mvnw clean checkstyle:check'
+                script { 
+                    try {
+                        sh './mvnw clean checkstyle:check'
+                    } //try
+                    catch (Exception e) {
+                    sendWarningAlert("${STAGE_NAME}", 'devs@example.com')
+                    unstable("${STAGE_NAME} stage failed!")
+                    } // catch
+                }
             }
         }
     }
@@ -44,4 +55,7 @@ void sendFailureAlert(String email) {
 mail to: "${email}",
 subject: "Pipeline failed: ${currentBuild.fullDisplayName}",
 body: "The following pipeline failed: ${env.BUILD_URL}"
+}
+void sendWarningAlert(String stage, String email) {
+    mail to: "${email}",
 }
