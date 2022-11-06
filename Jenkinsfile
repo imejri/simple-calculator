@@ -58,4 +58,6 @@ body: "The following pipeline failed: ${env.BUILD_URL}"
 }
 void sendWarningAlert(String stage, String email) {
     mail to: "${email}",
+    subject: "${stage} stage failed: ${currentBuild.fullDisplayName}",
+    body: "The ${stage} stage failed: ${env.BUILD_URL}"
 }
